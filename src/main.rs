@@ -41,7 +41,7 @@ fn tokenize(contents: String) -> Vec<Token> {
             }
             i -= 1;
 
-            if buf == "return" {
+            if buf == "exit" {
                 tokens.push(Token::new(TokenType::Exit, None));
                 buf.clear();
 
