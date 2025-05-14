@@ -2,7 +2,7 @@ use std::{env, fs, process::exit};
 
 mod tokenization;
 
-use tokenization::{tokenize, tokens_to_asm};
+use tokenization::Tokenizer;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -22,8 +22,11 @@ fn main() {
         }
     };
 
-    let tokens = tokenize(contents);
-    let asm = tokens_to_asm(tokens);
+    let mut tokenizer = Tokenizer::new(contents);
+    let tokens = tokenizer.tokenize();
+    let asm = tokenizer.to_asm(tokens);
+
+    println!("{asm}");
 
     match fs::write("out.asm", asm) {
         Err(err) => {
