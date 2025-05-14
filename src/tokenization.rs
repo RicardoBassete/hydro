@@ -34,6 +34,7 @@ impl Tokenizer {
         }
     }
 
+    /// Returns an Option\<char\> of the next character of the source code passed to the tokenizer
     fn peak(&self, ahead: usize) -> Option<char> {
         if self.current_index + ahead >= self.src.len() {
             return None;
@@ -43,6 +44,7 @@ impl Tokenizer {
         }
     }
 
+    /// Consumes one character of the source code and increments the index in 1
     fn consume(&mut self) -> char {
         let chars: Vec<char> = self.src.chars().collect();
         let result = chars[self.current_index];
@@ -50,6 +52,7 @@ impl Tokenizer {
         result
     }
 
+    /// Turns the source code passed to the tokenizer into a Vec\<Token\>
     pub fn tokenize(&mut self) -> Vec<Token> {
         let mut tokens: Vec<Token> = Vec::new();
         let mut buf: String = String::new();
@@ -106,6 +109,7 @@ impl Tokenizer {
         tokens
     }
 
+    /// Converts the vector of tokens to asm
     pub fn to_asm(&mut self, tokens: Vec<Token>) -> String {
         let mut output = String::from("global _start\n_start:\n");
 
