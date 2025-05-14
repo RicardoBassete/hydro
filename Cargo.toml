@@ -1,5 +1,6 @@
 [package]
 name = "hydro"
+description = "A simple compiler for an invented programming language named hydrogen"
 version = "0.1.0"
 edition = "2024"
 
