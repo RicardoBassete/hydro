@@ -26,8 +26,6 @@ fn main() {
     let tokens = tokenizer.tokenize();
     let asm = tokenizer.to_asm(tokens);
 
-    println!("{asm}");
-
     match fs::write("out.asm", asm) {
         Err(err) => {
             eprintln!("{err}");
