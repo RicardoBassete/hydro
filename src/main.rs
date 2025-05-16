@@ -1,7 +1,11 @@
 use std::{env, fs, process::exit};
 
+mod generation;
+mod parser;
 mod tokenization;
 
+use generation::Generator;
+use parser::Parser;
 use tokenization::Tokenizer;
 
 fn main() {
@@ -24,7 +28,14 @@ fn main() {
 
     let mut tokenizer = Tokenizer::new(contents);
     let tokens = tokenizer.tokenize();
-    let asm = tokenizer.to_asm(tokens);
+    let tree = match Parser::new(tokens).parse() {
+        Some(node) => node,
+        None => {
+            eprintln!("No exit statement found");
+            exit(1)
+        }
+    };
+    let asm = Generator::new(tree).generate();
 
     match fs::write("out.asm", asm) {
         Err(err) => {

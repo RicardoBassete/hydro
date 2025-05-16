@@ -1,12 +1,13 @@
 use std::process::exit;
 
-#[derive(PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq)]
 pub enum TokenType {
     Exit,
     IntLit,
     Semi,
 }
 
+#[derive(Clone)]
 pub struct Token {
     pub token_type: TokenType,
     pub value: Option<String>,
@@ -34,7 +35,6 @@ impl Tokenizer {
         }
     }
 
-    /// Returns an Option\<char\> of the next character of the source code passed to the tokenizer
     fn peak(&self, ahead: usize) -> Option<char> {
         if self.current_index + ahead >= self.src.len() {
             return None;
@@ -44,7 +44,6 @@ impl Tokenizer {
         }
     }
 
-    /// Consumes one character of the source code and increments the index in 1
     fn consume(&mut self) -> char {
         let chars: Vec<char> = self.src.chars().collect();
         let result = chars[self.current_index];
@@ -52,7 +51,6 @@ impl Tokenizer {
         result
     }
 
-    /// Turns the source code passed to the tokenizer into a Vec\<Token\>
     pub fn tokenize(&mut self) -> Vec<Token> {
         let mut tokens: Vec<Token> = Vec::new();
         let mut buf: String = String::new();
@@ -107,37 +105,5 @@ impl Tokenizer {
 
         self.current_index = 0;
         tokens
-    }
-
-    /// Converts the vector of tokens to asm
-    pub fn to_asm(&mut self, tokens: Vec<Token>) -> String {
-        let mut output = String::from("global _start\n_start:\n");
-
-        let mut i = 0;
-        while i < tokens.len() {
-            let token = &tokens[i];
-            match token.token_type {
-                TokenType::Exit => {
-                    if i + 1 < tokens.len() && tokens[i + 1].token_type == TokenType::IntLit {
-                        if i + 2 < tokens.len() && tokens[i + 2].token_type == TokenType::Semi {
-                            output.push_str("    mov rax, 60\n");
-                            output.push_str(
-                                &format!("    mov rdi, {}\n", tokens[i + 1].value.clone().unwrap())
-                                    .to_string(),
-                            );
-                            output.push_str("    syscall");
-                        }
-                    }
-                    i += 1;
-                }
-                _ => {
-                    i += 1;
-                    continue;
-                }
-            }
-            i += 1;
-        }
-
-        output
     }
 }
