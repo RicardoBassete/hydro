@@ -35,7 +35,7 @@ impl Tokenizer {
         }
     }
 
-    fn peak(&self, ahead: usize) -> Option<char> {
+    fn peek(&self, ahead: usize) -> Option<char> {
         if self.current_index + ahead >= self.src.len() {
             return None;
         } else {
@@ -55,10 +55,10 @@ impl Tokenizer {
         let mut tokens: Vec<Token> = Vec::new();
         let mut buf: String = String::new();
 
-        while let Some(c) = self.peak(0) {
+        while let Some(c) = self.peek(0) {
             if c.is_alphabetic() {
                 buf.push(self.consume());
-                while let Some(c) = self.peak(1) {
+                while let Some(c) = self.peek(1) {
                     if c.is_alphanumeric() {
                         buf.push(self.consume());
                         continue;
@@ -76,7 +76,7 @@ impl Tokenizer {
                 }
             } else if c.is_ascii_digit() {
                 buf.push(self.consume());
-                while let Some(c) = self.peak(1) {
+                while let Some(c) = self.peek(1) {
                     if c.is_ascii_digit() {
                         buf.push(self.consume());
                         continue;
