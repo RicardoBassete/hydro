@@ -21,7 +21,7 @@ impl Parser {
     }
 
     fn parse_expr(&mut self) -> Option<NodeExpr> {
-        let ahead = self.peak(1);
+        let ahead = self.peek(1);
         if ahead.is_some() && ahead.unwrap().token_type == TokenType::IntLit {
             return Some(NodeExpr {
                 int_lit: self.consume(),
@@ -33,8 +33,8 @@ impl Parser {
 
     pub fn parse(&mut self) -> Option<NodeExit> {
         let mut exit_node: Option<NodeExit> = None;
-        while self.peak(1).is_some() {
-            let ahead = self.peak(1).unwrap();
+        while self.peek(1).is_some() {
+            let ahead = self.peek(1).unwrap();
             if ahead.token_type == TokenType::Exit {
                 self.consume();
                 if let Some(node_expr) = self.parse_expr() {
@@ -44,7 +44,7 @@ impl Parser {
                     return None;
                 }
             }
-            if self.peak(1).is_some() && self.peak(1).unwrap().token_type != TokenType::Semi {
+            if self.peek(1).is_some() && self.peek(1).unwrap().token_type != TokenType::Semi {
                 eprintln!("Invalid expression");
                 return None;
             }
@@ -53,7 +53,7 @@ impl Parser {
         exit_node
     }
 
-    fn peak(&self, ahead: usize) -> Option<Token> {
+    fn peek(&self, ahead: usize) -> Option<Token> {
         if self.current_index + ahead >= self.tokens.len() {
             return None;
         } else {
